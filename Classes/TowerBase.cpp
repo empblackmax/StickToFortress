@@ -14,7 +14,7 @@ bool TowerBase::init()
 	{
 		return false;
 	}
-	this->scheduleUpdate();
+	//this->scheduleUpdate();
 	return true;
 }
 

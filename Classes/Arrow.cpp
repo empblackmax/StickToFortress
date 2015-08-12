@@ -34,19 +34,10 @@ Sprite* Arrow::ArrowBullet()//生成子弹
 
 void Arrow::rotate()
 {
-	////检测炮塔视线范围内距离它最近的敌人
-	//checkNearestEnemy();
-	//if (nearestEnemy != NULL)
-	//{
-	//	//如果最近的敌人nearestEnemy存在，弓箭则会旋转，所以我们需要计算弓箭旋转的角度和旋转时间
-	
-	//touchPosition = this->convertToNodeSpace(touchPosition);
+
 	auto rotateVector = touchPosition - this->getPosition();
 	auto rotateRadians = rotateVector.getAngle();
-	auto rotateDegrees = CC_RADIANS_TO_DEGREES(-1*rotateRadians);
-	//auto rotateVector = nearestEnemy->sprite->getPosition() - this->getPosition();
-	//	auto rotateRadians = rotateVector.getAngle();
-	//	auto rotateDegrees = CC_RADIANS_TO_DEGREES(-1 * rotateRadians);
+	auto rotateDegrees = CC_RADIANS_TO_DEGREES(-1*rotateRadians);//旋转角度
 
 		//计算旋转时间
 		auto speed = 0.5 / M_PI;
@@ -54,11 +45,6 @@ void Arrow::rotate()
 		auto rotateTo = RotateTo::create(rotateDuration, rotateDegrees);
 		//auto rotateBy = RotateBy::create(rotateDuration, rotateDegrees);
 		rotateArrow->runAction(rotateTo);
-	//	//让弓箭顺序执行旋转动作和shoot方法
-	//	rotateArrow->runAction(Sequence::create(RotateTo::create(rotateDuration, rotateDegrees),
-	//		CallFunc::create(CC_CALLBACK_0(ArrowTower::shoot, this)),
-	//		NULL));
-	//}
 }
 
 void Arrow::shoot(float dt)//在弓箭处生成一颗子弹，发动射击
@@ -66,8 +52,6 @@ void Arrow::shoot(float dt)//在弓箭处生成一颗子弹，发动射击
 	GameController *instance = GameController::getInstance();
 	auto bulletVector = instance->bulletVector;
 
-	//if (nearestEnemy != NULL && nearestEnemy->getCurrHp() > 0)
-	//{
 		auto currBullet = ArrowBullet();
 		instance->bulletVector.pushBack(currBullet);
 		arrowBullet.pushBack(currBullet);

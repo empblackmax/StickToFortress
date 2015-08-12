@@ -14,16 +14,6 @@ public:
 
 	Vector<EnemyBase*> enemyVector;
 	Vector<Sprite*> bulletVector;
-	//Vector<TowerBase*> towerVector;
-	//Vector<GroupEnemy*> groupVector;
-
-	/*CC_SYNTHESIZE(int, money, Money);
-	CC_SYNTHESIZE(int, groupNum, GroupNum);
-	CC_SYNTHESIZE(std::string, curMapName, CurMapName);
-	CC_SYNTHESIZE(std::string, currLevelFile, CurrLevelFile);
-	CC_SYNTHESIZE(std::string, nextLevelFile, NextLevelFile);
-	CC_SYNTHESIZE(bool, isFinishedAddGroup, IsFinishedAddGroup);
-	CC_SYNTHESIZE(std::string, curBgName, CurBgName);*/
 
 	bool init();
 	void clear();

@@ -13,9 +13,8 @@ class Bandit : public EnemyBase
 public:
 	virtual bool init() override;
 
-	static Bandit* createBandit(/*Vector<Node*> points,*/ int hp);
-	/*void changeDirection(float dt);*/
-	void enemyExpload();
+	static Bandit* createBandit( int hp);//创建怪物
+	void enemyExpload();//销毁怪物
 };
 
 

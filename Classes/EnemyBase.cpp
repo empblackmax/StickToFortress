@@ -3,11 +3,9 @@
 EnemyBase::EnemyBase()
 :sprite(NULL)
 , hpBgSprite(NULL)
-//, pointCounter(0)
 , animationRight(NULL)
 , animationLeft(NULL)
 , animationExplode(NULL)
-//, pointsVector(NULL)
 , runSpeed(0)
 , maxHp(0)
 , currHp(0)
@@ -70,53 +68,3 @@ void EnemyBase::moveToArrow(Point position1,Point position2)
 	sprite->runAction(moveTo);
 }
 
-
-//Node* EnemyBase::currPoint()//获得敌人当前所处的路径点
-//{
-//	if (pointsVector.size() > 0)
-//	{
-//		return this->pointsVector.at(pointCounter);
-//	}
-//	else
-//	{
-//		return NULL;
-//	}
-//}
-//
-//Node* EnemyBase::nextPoint()//下一个移动点
-//{
-//	int maxCount = this->pointsVector.size();
-//	pointCounter++;
-//	if (pointCounter < maxCount)
-//	{
-//		auto node = this->pointsVector.at(pointCounter);
-//		return node;
-//	}
-//	else
-//	{
-//		setEnemySuccessful(true);
-//	}
-//	return NULL;
-//}
-//
-//void EnemyBase::runFllowPoint()
-//{
-//	auto temp = currPoint();
-//	sprite->setPosition(temp->getPosition());
-//	auto point = nextPoint();
-//
-//	if (point != NULL)
-//	{
-//		auto duration = temp->getPosition().getDistance(point->getPosition()) / getRunSpeed();
-//		auto moveTo = MoveTo::create(duration, point->getPosition());
-//		auto callFuncN = CallFuncN::create(CC_CALLBACK_0(EnemyBase::runFllowPoint, this));
-//		sprite->runAction(Sequence::create(moveTo, callFuncN, NULL));
-//	}
-//}
-//
-//
-//void EnemyBase::setPointsVector(Vector<Node*> points)
-//{
-//	this->pointsVector = points;
-//}
-//

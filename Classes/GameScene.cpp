@@ -27,16 +27,14 @@ bool GameScene::init()
 	bground->setPosition(winSize / 2);
 	this->addChild(bground,-2);
 
-	//地图层
+	//地图
 	_map = TMXTiledMap::create("sticktofortress.tmx");
-	//_map->setAnchorPoint(Point(0.5f, 0.5f));
-	//_map->setPosition(Point(winSize.width / 2, winSize.height / 2 ));
-	_objects = _map->getLayer("BgLayer");
-	/*_objects->setAnchorPoint(Point(0.5f, 0.5f));
-	_objects->setPosition(winSize / 2);*/
+
+	_bgLayer = _map->getLayer("BgLayer");
+
 
 	_objectsgroup = _map->getObjectGroup("Objects");
-	auto arrowPoint = _objectsgroup->getObject("ArrowPoint");
+	auto arrowPoint = _objectsgroup->getObject("ArrowPoint");//弓箭出现的地点
 	float x = arrowPoint["x"].asFloat();
 	float y = arrowPoint["y"].asFloat();
 
@@ -47,31 +45,26 @@ bool GameScene::init()
 	this->setViewCenter(_arrow->getPosition());
 
 	this->addChild(_map,-1);
-
+	
+	//准星
 	_point = Sprite::create("point.png");
 	_point->setPosition(winSize / 2);
 	this->addChild(_point,5);
-	_arrow->setTouchPosition(_point->getPosition());;
+	_arrow->setTouchPosition(_point->getPosition());//弓箭瞄准准星
 	_arrow->rotate();
 
+	//触摸监听器
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = [&](Touch* touch,Event* event)
 	{
 		px = touch->getLocation().x;
 		py = touch->getLocation().y;
-		/*_arrow->setTouchPosition(_point->getPosition());;
-		_arrow->rotate();*/
 		_arrow->schedule(schedule_selector(Arrow::shoot),0.2f);
 
 		return true;
 	};
 	listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
-	
-	/*listener->onTouchMoved = [&](Touch* touch, Event* event)
-	{
-	_arrow->setTouchPosition(touch->getLocation());
-	_arrow->schedule(schedule_selector(Arrow::rotate));
-	};*/
+
 	listener->onTouchEnded=[&](Touch* touch, Event* event)
 	{
 		_arrow->unschedule(schedule_selector(Arrow::shoot));
@@ -79,15 +72,14 @@ bool GameScene::init()
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-	initBornEnemyVector();
-	//addEnemy();
-	this->schedule(schedule_selector(GameScene::addEnemy ),2.0f);
-	this->schedule(schedule_selector(GameScene::CollisionDetection));
+	initBornEnemyVector();//初始化可能产生怪物的点
+	this->schedule(schedule_selector(GameScene::addEnemy ),2.0f);//添加怪物
+	this->schedule(schedule_selector(GameScene::CollisionDetection));//碰撞检测
 
 	return true;
 }
 
-void GameScene::setViewCenter(Point position)
+void GameScene::setViewCenter(Point position)//以某点为中心
 {
 	float x = std::max(position.x, winSize.width / 2);
 	float y = std::max(position.y, winSize.height / 2);
@@ -105,10 +97,8 @@ void GameScene::setViewCenter(Point position)
 
 }
 
-void GameScene::onTouchMoved(Touch *touch, Event *unused_event)
+void GameScene::onTouchMoved(Touch *touch, Event *unused_event)//移动准星并且让弓箭随准星移动
 {
-	/*_arrow->setTouchPosition(_point->getPosition());;
-	_arrow->rotate();*/
 	int mx = touch->getLocation().x - px;
 	int my = touch->getLocation().y - py;
 	_point->runAction(MoveBy::create(0, Point(mx, my)));
@@ -117,10 +107,6 @@ void GameScene::onTouchMoved(Touch *touch, Event *unused_event)
 	px = touch->getLocation().x;
 	py = touch->getLocation().y;
 	_arrow->setTouchPosition(_point->getPosition());;
-	/*_arrow->rotate();
-	_arrow->setTouchPosition(_point->getPosition());*/
-	
-	
 	
 }
 
@@ -155,10 +141,10 @@ void GameScene::addEnemy(float dt)//将敌人加到场景
 	}
 	int rana = rand() % 3+rand()%5;
 	auto enemy = creatEnemy();
-	//enemy->setPosition(_bornEnemy.at(rana)->getPosition());
-	//enemy->sprite->setPosition(_bornEnemy.at(rana)->getPosition());
-	//enemy->moveToArrow(_arrow->getPosition());
-	enemy->moveToArrow(_bornEnemy.at(rana)->getPosition(), Point(_bornEnemy.at(rana)->getPositionX(), _arrow->getPositionY()));
+
+	//怪物朝弓箭移动
+	enemy->moveToArrow(_bornEnemy.at(rana)->getPosition(), 
+		Point(_bornEnemy.at(rana)->getPositionX(), _arrow->getPositionY()));
 	this->addChild(enemy);
 
 }
@@ -206,6 +192,7 @@ void GameScene::CollisionDetection(float dt)//碰撞检测
 		{
 			return;
 		}
+		//弓箭的大小
 		auto  bulletRect = Rect(bullet->getPositionX() + bullet->getParent()->getPositionX() - bullet->getContentSize().width / 2,
 			  bullet->getPositionY() + bullet->getParent()->getPositionY() - bullet->getContentSize().height / 2,
 			  bullet->getContentSize().width,
@@ -214,13 +201,13 @@ void GameScene::CollisionDetection(float dt)//碰撞检测
 		for (int j = 0; j < enemyVector.size(); j++)
 		{
 			auto enemy = enemyVector.at(j);
-			//auto enemyRect = enemy->sprite->getBoundingBox();
+			//怪物的大小
 			auto enemyRect = Rect(enemy->sprite->getPositionX() - enemy->sprite->getContentSize().width / 4,
 				 enemy->sprite->getPositionY() - enemy->sprite->getContentSize().height / 4,
 				 enemy->sprite->getContentSize().width / 2,
 				 enemy->sprite->getContentSize().height / 2);
-			/*auto aa = enemy->sprite->getPositionX();
-			auto bb = enemy->sprite->getPositionY();*/
+
+			//判断弓箭和怪物是否碰撞
 			if (bulletRect.intersectsRect(enemyRect))
 			{
 				auto currHp = enemy->getCurrHp();
@@ -240,16 +227,12 @@ void GameScene::CollisionDetection(float dt)//碰撞检测
 				if (currHp <= 0)
 				{
 					enemyNeedToDelete.pushBack(enemy);
-					//auto valueMoney = enemy->getVaule();
-					//money += valueMoney;
-					//auto moneyText = std::to_string(money);
-					//moneyLabel->setString(moneyText);
 				}
 				bulletNeedToDelete.pushBack(bullet);
 				break;
 			}
 		}
-		for (EnemyBase* enemyTemp : enemyNeedToDelete)
+		for (EnemyBase* enemyTemp : enemyNeedToDelete)//遍历需要销毁的怪物
 		{
 			enemyTemp->enemyExpload();
 			instance->enemyVector.eraseObject(enemyTemp);
@@ -257,7 +240,7 @@ void GameScene::CollisionDetection(float dt)//碰撞检测
 		enemyNeedToDelete.clear();
 	}
 
-	for (Sprite* bulletTemp : bulletNeedToDelete)
+	for (Sprite* bulletTemp : bulletNeedToDelete)//遍历需要销毁的子弹
 	{
 		instance->bulletVector.eraseObject(bulletTemp);
 		bulletTemp->removeFromParent();

@@ -13,6 +13,5 @@ void GameController::clear()
 {
 	enemyVector.clear();
 	bulletVector.clear();
-	//towerVector.clear();
-	//groupVector.clear();
+
 }

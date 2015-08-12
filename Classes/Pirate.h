@@ -12,8 +12,7 @@ class Pirate : public EnemyBase
 public:
 	virtual bool init() override;
 
-	static Pirate* createPirate(/*Vector<Node*> points,*/ int hp);
-	//void changeDirection(float dt);
+	static Pirate* createPirate( int hp);
 	void enemyExpload();
 };
 

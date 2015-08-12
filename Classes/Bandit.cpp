@@ -19,19 +19,18 @@ bool Bandit::init()
 	AnimationCache::getInstance()->addAnimation(animationExplode, "explode3");
 
 	createAndSetHpBar();
-	//schedule(schedule_selector(Bandit::changeDirection), 0.4f);
 	return true;
 }
 
-Bandit* Bandit::createBandit(/*Vector<Node*> points,*/ int hp)
+Bandit* Bandit::createBandit( int hp)
 {
 	Bandit *pRet = new Bandit();
 	if (pRet && pRet->init())
 	{
-		/*pRet->setPointsVector(points);*/
+		
 		pRet->setMaxHp(hp);
 		pRet->setCurrHp(hp);
-		/*pRet->runFllowPoint();*/
+
 
 		pRet->autorelease();
 		return pRet;
@@ -43,27 +42,11 @@ Bandit* Bandit::createBandit(/*Vector<Node*> points,*/ int hp)
 		return NULL;
 	}
 }
-//void Bandit::changeDirection(float dt)
-//{
-//	auto curr = currPoint();
-//	if (curr == NULL)
-//	{
-//		return;
-//	}
-//	if (curr->getPositionX() > sprite->getPosition().x)
-//	{
-//		sprite->runAction(Animate::create(AnimationCache::getInstance()->getAnimation("runright3")));
-//	}
-//	else
-//	{
-//		sprite->runAction(Animate::create(AnimationCache::getInstance()->getAnimation("runleft3")));
-//	}
-//}
-void Bandit::enemyExpload()
+
+void Bandit::enemyExpload()//Ïú»Ù¹ÖÎï
 {
 	hpBgSprite->setVisible(false);
 	sprite->stopAllActions();
-	//unschedule(schedule_selector(Bandit::changeDirection));
 	sprite->setAnchorPoint(Point(0.5f, 0.25f));
 	sprite->runAction(Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("explode3"))
 		, CallFuncN::create(CC_CALLBACK_0(EnemyBase::removeFromParent, this))

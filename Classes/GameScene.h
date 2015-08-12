@@ -20,20 +20,20 @@ public:
 	void setViewCenter(Point position);
 
 	virtual void onTouchMoved(Touch *touch, Event *unused_event);
-	void initBornEnemyVector();
-	void CollisionDetection(float dt);
-	void addEnemy(float dt);
+	void initBornEnemyVector();//初始化可能产生怪物的所有地点
+	void CollisionDetection(float dt);//碰撞检测
+	void addEnemy(float dt);//添加怪物到场景
 
 	EnemyBase* creatEnemy();
 private:
-	TMXTiledMap* _map;
-	TMXLayer* _objects;
+	TMXTiledMap* _map;//地图
+	TMXLayer* _bgLayer;//背景层
 	Size winSize;
-	TMXObjectGroup* _objectsgroup;
-	Arrow* _arrow;
+	TMXObjectGroup* _objectsgroup;//对象组
+	Arrow* _arrow;//弓箭
 	float px, py;
-	Sprite* _point;
-	Vector<Node*> _bornEnemy;
+	Sprite* _point;//准星
+	Vector<Node*> _bornEnemy;//怪物出现地点
 	GameController* instance;
 	EnemyBase* currenemy;
 };
